@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import { fanOutPost } from "./feed.service.js";
 
 export async function createPost(userId, content) {
   const result = await pool.query(
@@ -6,5 +7,10 @@ export async function createPost(userId, content) {
     [userId, content]
   );
 
-  return result.rows[0];
+  const post = result.rows[0];
+
+  // 🔥 FAN-OUT-ON-WRITE (CORE FEATURE)
+  await fanOutPost(post.id, userId, post.created_at);
+
+  return post;
 }
