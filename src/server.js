@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import "./config/redis.js";
+
 dotenv.config();
 
 import app from "./app.js";
